@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
 /** @type {import('@adonisjs/framework/src/Env')} */
-const Env = use('Env');
+const Env = use('Env')
 
 module.exports = {
   /*
@@ -54,7 +54,7 @@ module.exports = {
     | values. Read documentation for that.
     |
     */
-    trustProxy: false,
+    trustProxy: true,
 
     /*
     |--------------------------------------------------------------------------
@@ -238,4 +238,4 @@ module.exports = {
     path: '/',
     maxAge: 7200
   }
-};
+}

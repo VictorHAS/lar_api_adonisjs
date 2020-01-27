@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const Model = use('Model');
+const Model = use('Model')
 
 /** @type {import('@adonisjs/framework/src/Hash')} */
-const Hash = use('Hash');
+const Hash = use('Hash')
 
-const uuid = require('uuid/v4');
+const uuid = require('uuid/v4')
 
 class User extends Model {
   static get hidden() {
@@ -15,15 +15,16 @@ class User extends Model {
       'token',
       'token_created_at',
       'updated_at',
-      'created_at'
-    ];
+      'created_at',
+      'pivot'
+    ]
   }
 
   static boot() {
     const user = {
       id: uuid.v4()
-    };
-    super.boot();
+    }
+    super.boot()
 
     /**
      * A hook to hash the user password before saving
@@ -31,18 +32,18 @@ class User extends Model {
      */
     this.addHook('beforeSave', async userInstance => {
       if (userInstance.dirty.password) {
-        userInstance.password = await Hash.make(userInstance.password);
+        userInstance.password = await Hash.make(userInstance.password)
       }
-    });
+    })
 
     this.addHook('beforeCreate', async userInstance => {
-      userInstance.id = user.id;
-    });
+      userInstance.id = user.id
+    })
     this.addHook('afterCreate', async userInstance => {
-      userInstance.id = await user.id;
-      await delete user.id;
-      user.id = await uuid.v4();
-    });
+      userInstance.id = await user.id
+      await delete user.id
+      user.id = await uuid.v4()
+    })
   }
 
   /**
@@ -56,25 +57,25 @@ class User extends Model {
    * @return {Object}
    */
   tokens() {
-    return this.hasMany('App/Models/Token');
+    return this.hasMany('App/Models/Token')
   }
 
   deviceJoins() {
-    return this.hasMany('App/Models/DeviceUser');
+    return this.hasMany('App/Models/DeviceUser')
   }
 
   devices() {
     return this.belongsToMany('App/Models/Device').pivotModel(
       'App/Models/DeviceUser'
-    );
+    )
   }
 
   static get traits() {
     return [
       '@provider:Adonis/Acl/HasRole',
       '@provider:Adonis/Acl/HasPermission'
-    ];
+    ]
   }
 }
 
-module.exports = User;
+module.exports = User
